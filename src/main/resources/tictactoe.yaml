@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: TicTacToe API
+  version: 1.0.0
+  description: API contract for TicTacToe models
+
+paths:
+  /dummy:
+    get:
+      summary: Dummy endpoint for OpenAPI generation
+      operationId: dummy
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+
+    MoveRequest:
+      type: object
+      required:
+        - position
+      properties:
+        position:
+          type: integer
+          minimum: 0
+          maximum: 8
+          example: 4
+          description: Board position (0-8)
+
+    GameResponse:
+      type: object
+      properties:
+        gameId:
+          type: string
+          example: "123e4567-e89b-12d3-a456-426614174000"
+
+        board:
+          type: array
+          items:
+            type: string
+            enum: ["X", "O", "-"]
+          example: ["X","O","-","-","X","-","O","-","-"]
+
+        currentPlayer:
+          type: string
+          enum: ["X", "O"]
+
+        status:
+          type: string
+          enum: ["IN_PROGRESS", "WIN", "DRAW"]
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+
+        errorDetail:
+          type: string
+          example: "Cell occupied"
+
+        extraErrorData:
+          type: array
+          items:
+            type: string
