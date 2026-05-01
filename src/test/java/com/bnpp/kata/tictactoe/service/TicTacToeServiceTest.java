@@ -32,4 +32,15 @@ public class TicTacToeServiceTest {
         assertEquals(GameStatus.IN_PROGRESS, newGame.getStatus());
         assertEquals(BOARD_LENGTH, newGame.getBoard().length);
     }
+
+
+    @Test
+    @DisplayName("move should place X at the given position on first turn")
+    void shouldPlaceXFirst() {
+        Game game = ticTacToeService.createGame();
+
+        Game updated = ticTacToeService.move(game, 0);
+
+        assertEquals('X', updated.getBoard()[0]);
+    }
 }

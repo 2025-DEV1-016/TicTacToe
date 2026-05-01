@@ -14,4 +14,10 @@ public class TicTacToeService {
 
         return newGame;
     }
+
+    public Game move(Game game, int position) {
+        char symbol = game.getCurrentPlayer().symbol();
+        game.update(position, symbol);
+        return game;
+    }
 }
