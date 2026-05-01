@@ -19,9 +19,13 @@ public class TicTacToeService {
     public Game move(Game game, int position) {
         char symbol = game.getCurrentPlayer().symbol();
         game.update(position, symbol);
+        next(game);
+        return game;
+    }
+
+    private static void next(Game game) {
         if (game.getStatus() == GameStatus.IN_PROGRESS) {
             game.setCurrentPlayer(game.getCurrentPlayer().next());
         }
-        return game;
     }
 }
