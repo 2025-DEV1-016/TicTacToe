@@ -33,7 +33,6 @@ public class TicTacToeServiceTest {
         assertEquals(BOARD_LENGTH, newGame.getBoard().length);
     }
 
-
     @Test
     @DisplayName("move should place X at the given position on first turn")
     void shouldPlaceXFirst() {
@@ -42,5 +41,16 @@ public class TicTacToeServiceTest {
         Game updated = ticTacToeService.move(game, 0);
 
         assertEquals('X', updated.getBoard()[0]);
+    }
+
+    @Test
+    @DisplayName("Should alternate players between X and O")
+    void shouldAlternatePlayers() {
+        Game game = ticTacToeService.createGame();
+
+        ticTacToeService.move(game, 0); // X
+        Game updated = ticTacToeService.move(game, 1); // O
+
+        assertEquals('O', updated.getBoard()[1]);
     }
 }

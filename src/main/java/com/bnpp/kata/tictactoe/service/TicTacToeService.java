@@ -1,6 +1,7 @@
 package com.bnpp.kata.tictactoe.service;
 
 import com.bnpp.kata.tictactoe.domain.Game;
+import com.bnpp.kata.tictactoe.domain.GameStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -18,6 +19,9 @@ public class TicTacToeService {
     public Game move(Game game, int position) {
         char symbol = game.getCurrentPlayer().symbol();
         game.update(position, symbol);
+        if (game.getStatus() == GameStatus.IN_PROGRESS) {
+            game.setCurrentPlayer(game.getCurrentPlayer().next());
+        }
         return game;
     }
 }
