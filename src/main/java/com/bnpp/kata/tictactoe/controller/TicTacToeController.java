@@ -6,9 +6,11 @@ import com.bnpp.kata.tictactoe.api.model.MoveRequest;
 import com.bnpp.kata.tictactoe.mapper.GameMapper;
 import com.bnpp.kata.tictactoe.service.TicTacToeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class TicTacToeController implements GamesApi {
@@ -18,6 +20,7 @@ public class TicTacToeController implements GamesApi {
 
     @Override
     public ResponseEntity<GameResponse> createGame() {
+        log.info("API request: create new game");
         return ResponseEntity.ok(gameMapper.toResponse(ticTacToeService.createGame()));
     }
 
@@ -30,6 +33,7 @@ public class TicTacToeController implements GamesApi {
 
     @Override
     public ResponseEntity<GameResponse> getGame(String gameId) {
+        log.info("API request: reset gameId={}", gameId);
         return ResponseEntity.ok(gameMapper.toResponse(ticTacToeService.getGame(gameId)));
     }
 

@@ -4,6 +4,7 @@ import com.bnpp.kata.tictactoe.domain.Game;
 import com.bnpp.kata.tictactoe.engine.GameEngine;
 import com.bnpp.kata.tictactoe.validator.TicTacToeMoveValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TicTacToeService {
@@ -27,6 +29,8 @@ public class TicTacToeService {
     public Game createGame() {
 
         String gameId = UUID.randomUUID().toString();
+
+        log.info("Creating new game with id={}", gameId);
 
         Game newGame = new Game(gameId);
 
@@ -47,7 +51,7 @@ public class TicTacToeService {
     }
 
     public Game reset(String gameId) {
-
+        log.info("Resetting game with id={}", gameId);
         Game existingGame = getGame(gameId);
 
         Game newGame = new Game(gameId);
