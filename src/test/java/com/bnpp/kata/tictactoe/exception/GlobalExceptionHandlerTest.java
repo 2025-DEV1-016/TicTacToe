@@ -24,6 +24,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(GlobalExceptionHandler.class)
 public class GlobalExceptionHandlerTest {
 
+    private static final String GAME_ID = "1";
+
+    private static final String MOVES_URL = "/games/" + GAME_ID + "/moves";
+
+    private static final String INVALID_POSITION_REQUEST = "{\"position\":99}";
+    private static final String VALID_POSITION_REQUEST = "{\"position\":0}";
+
+    private static final String INVALID_POSITION_MSG = "Invalid position";
+    private static final String CELL_OCCUPIED_MSG = "Cell already occupied";
+    private static final String GAME_FINISHED_MSG = "Game finished";
+    private static final String GENERIC_ERROR_MSG = "Unexpected error";
+
+    private static final int BAD_REQUEST = 400;
+    private static final int CONFLICT = 409;
+    private static final int INTERNAL_SERVER_ERROR = 500;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -40,14 +56,14 @@ public class GlobalExceptionHandlerTest {
     @DisplayName("should return 400 for invalid move position")
     void shouldReturn400ForInvalidMove() throws Exception {
 
-        when(ticTacToeService.move("1", 99))
-                .thenThrow(new IllegalArgumentException("Invalid position"));
+        when(ticTacToeService.move(GAME_ID, 99))
+                .thenThrow(new IllegalArgumentException(INVALID_POSITION_MSG));
 
-        mockMvc.perform(post("/games/1/moves")
+        mockMvc.perform(post(MOVES_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position\":99}"))
+                        .content(INVALID_POSITION_REQUEST))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST))
                 .andExpect(jsonPath("$.extraErrorData").isNotEmpty())
                 .andExpect(jsonPath("$.extraErrorData[0]").value(containsString("position")));
     }
@@ -56,14 +72,14 @@ public class GlobalExceptionHandlerTest {
     @DisplayName("Should return 400 when cell is already occupied")
     void shouldReturn400ForCellOccupied() throws Exception {
 
-        when(ticTacToeService.move("1", 0))
-                .thenThrow(new IllegalArgumentException("Cell already occupied"));
+        when(ticTacToeService.move(GAME_ID, 0))
+                .thenThrow(new IllegalArgumentException(CELL_OCCUPIED_MSG));
 
-        mockMvc.perform(post("/games/1/moves")
+        mockMvc.perform(post(MOVES_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"position\":0}"))
+                        .content(VALID_POSITION_REQUEST))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorDetail").value("Cell already occupied"))
+                .andExpect(jsonPath("$.errorDetail").value(CELL_OCCUPIED_MSG))
                 .andExpect(jsonPath("$.extraErrorData").isEmpty());
     }
 
@@ -71,15 +87,15 @@ public class GlobalExceptionHandlerTest {
     @DisplayName("should return 409 when game already finished")
     void shouldReturn409WhenGameFinished() throws Exception {
 
-        when(ticTacToeService.move("1", 4))
-                .thenThrow(new IllegalStateException("Game finished"));
+        when(ticTacToeService.move(GAME_ID, 4))
+                .thenThrow(new IllegalStateException(GAME_FINISHED_MSG));
 
-        mockMvc.perform(post("/games/1/moves")
+        mockMvc.perform(post(MOVES_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"position\":4}"))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.status").value(409))
-                .andExpect(jsonPath("$.errorDetail").value("Game finished"))
+                .andExpect(jsonPath("$.status").value(CONFLICT))
+                .andExpect(jsonPath("$.errorDetail").value(GAME_FINISHED_MSG))
                 .andExpect(jsonPath("$.extraErrorData").isEmpty());
     }
 
@@ -87,15 +103,15 @@ public class GlobalExceptionHandlerTest {
     @DisplayName("Should return 500 for unexpected server error")
     void shouldReturn500ForUnexpectedError() throws Exception {
 
-        when(ticTacToeService.move("1" , 1))
+        when(ticTacToeService.move(GAME_ID , 1))
                 .thenThrow(new RuntimeException("Something broke"));
 
-        mockMvc.perform(post("/games/1/moves")
+        mockMvc.perform(post(MOVES_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"position\":1}"))
                 .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value(500))
-                .andExpect(jsonPath("$.errorDetail").value("Unexpected error"))
+                .andExpect(jsonPath("$.status").value(INTERNAL_SERVER_ERROR))
+                .andExpect(jsonPath("$.errorDetail").value(GENERIC_ERROR_MSG))
                 .andExpect(jsonPath("$.extraErrorData").isEmpty());
     }
 
