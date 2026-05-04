@@ -53,4 +53,19 @@ public class TicTacToeServiceTest {
 
         assertEquals('O', updated.getBoard()[1]);
     }
+
+    @Test
+    @DisplayName("should set game status to WIN on a winning move")
+    void shouldDetectWin() {
+        Game game = ticTacToeService.createGame();
+
+        ticTacToeService.move(game, 0);
+        ticTacToeService.move(game, 3);
+        ticTacToeService.move(game, 1);
+        ticTacToeService.move(game, 4);
+        Game result = ticTacToeService.move(game, 2); // win
+
+        assertEquals(GameStatus.WIN, result.getStatus());
+        assertEquals('X', result.getBoard()[2]);
+    }
 }
