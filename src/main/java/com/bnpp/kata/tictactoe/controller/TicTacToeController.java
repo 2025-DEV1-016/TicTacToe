@@ -2,11 +2,11 @@ package com.bnpp.kata.tictactoe.controller;
 
 import com.bnpp.kata.tictactoe.api.GamesApi;
 import com.bnpp.kata.tictactoe.api.model.GameResponse;
+import com.bnpp.kata.tictactoe.api.model.MoveRequest;
 import com.bnpp.kata.tictactoe.mapper.GameMapper;
 import com.bnpp.kata.tictactoe.service.TicTacToeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,6 +19,13 @@ public class TicTacToeController implements GamesApi {
     @Override
     public ResponseEntity<GameResponse> createGame() {
         return ResponseEntity.ok(gameMapper.toResponse(ticTacToeService.createGame()));
+    }
+
+    @Override
+    public ResponseEntity<GameResponse> makeMove(String gameId, MoveRequest request) {
+        return ResponseEntity.ok(
+                gameMapper.toResponse(ticTacToeService.move(gameId, request.getPosition()))
+        );
     }
 
 }
