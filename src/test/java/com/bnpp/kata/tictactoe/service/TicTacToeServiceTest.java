@@ -19,6 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TicTacToeServiceTest {
 
     public static final int BOARD_LENGTH = 9;
+    public static final String UNKNOWN_GAME_ID = "unknown-id";
+    public static final String GAME_NOT_FOUND = "Game not found: ";
+    public static final String INVALID_GAME_ID = "invalid-id";
+    public static final String EMPTY_BOARD = "---------";
 
     private TicTacToeService ticTacToeService;
 
@@ -180,7 +184,7 @@ public class TicTacToeServiceTest {
         assertEquals(game.getGameId(), resetGame.getGameId());
         assertEquals(GameStatus.IN_PROGRESS, resetGame.getStatus());
         assertEquals(Player.X, resetGame.getCurrentPlayer());
-        assertArrayEquals("---------".toCharArray(), resetGame.getBoard());
+        assertArrayEquals(EMPTY_BOARD.toCharArray(), resetGame.getBoard());
     }
 
     @Test
@@ -198,10 +202,8 @@ public class TicTacToeServiceTest {
     @DisplayName("should throw when resetting non-existing game")
     void shouldThrowWhenResetGameNotFound() {
 
-        String gameId = "invalid-id";
-
         assertThrows(NoSuchElementException.class, () ->
-                ticTacToeService.reset(gameId)
+                ticTacToeService.reset(INVALID_GAME_ID)
         );
     }
 
@@ -209,14 +211,12 @@ public class TicTacToeServiceTest {
     @DisplayName("should throw exception when game not found")
     void shouldThrowWhenGameNotFound() {
 
-        String gameId = "unknown-id";
-
         NoSuchElementException exception = assertThrows(
                 NoSuchElementException.class,
-                () -> ticTacToeService.getGame(gameId)
+                () -> ticTacToeService.getGame(UNKNOWN_GAME_ID)
         );
 
-        assertEquals("Game not found: " + gameId, exception.getMessage());
+        assertEquals(GAME_NOT_FOUND + UNKNOWN_GAME_ID, exception.getMessage());
     }
 
     @Test

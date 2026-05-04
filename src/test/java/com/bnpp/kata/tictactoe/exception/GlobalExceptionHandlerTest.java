@@ -30,6 +30,7 @@ public class GlobalExceptionHandlerTest {
     private static final String GAME_ID = "1";
 
     private static final String MOVES_URL = "/games/" + GAME_ID + "/moves";
+    private static final String GET_GAME_URL = "/games/" + GAME_ID;
 
 
     private static final String INVALID_POSITION_REQUEST = "{\"position\":99}";
@@ -39,10 +40,12 @@ public class GlobalExceptionHandlerTest {
     private static final String CELL_OCCUPIED_MSG = "Cell already occupied";
     private static final String GAME_FINISHED_MSG = "Game finished";
     private static final String GENERIC_ERROR_MSG = "Unexpected error";
+    private static final String GAME_NOT_FOUND_MSG = "Game not found: " + GAME_ID;
 
     private static final int BAD_REQUEST = 400;
     private static final int CONFLICT = 409;
     private static final int INTERNAL_SERVER_ERROR = 500;
+    private static final int NOT_FOUND = 404;
 
     @Autowired
     private MockMvc mockMvc;
@@ -107,7 +110,7 @@ public class GlobalExceptionHandlerTest {
     @DisplayName("Should return 500 for unexpected server error")
     void shouldReturn500ForUnexpectedError() throws Exception {
 
-        when(ticTacToeService.move(GAME_ID , 1))
+        when(ticTacToeService.move(GAME_ID, 1))
                 .thenThrow(new RuntimeException("Something broke"));
 
         mockMvc.perform(post(MOVES_URL)
@@ -124,12 +127,12 @@ public class GlobalExceptionHandlerTest {
     void shouldReturn404WithGameIdInMessage() throws Exception {
 
         when(ticTacToeService.getGame(GAME_ID))
-                .thenThrow(new NoSuchElementException("Game not found: 1"));
+                .thenThrow(new NoSuchElementException(GAME_NOT_FOUND_MSG));
 
-        mockMvc.perform(get("/games/1"))
+        mockMvc.perform(get(GET_GAME_URL))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.errorDetail").value("Game not found: 1"))
+                .andExpect(jsonPath("$.status").value(NOT_FOUND))
+                .andExpect(jsonPath("$.errorDetail").value(GAME_NOT_FOUND_MSG))
                 .andExpect(jsonPath("$.extraErrorData").isEmpty());
     }
 
