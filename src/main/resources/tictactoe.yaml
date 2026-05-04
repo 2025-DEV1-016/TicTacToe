@@ -1,19 +1,119 @@
 openapi: 3.0.3
+
 info:
   title: TicTacToe API
   version: 1.0.0
-  description: API contract for TicTacToe models
+  description: REST API for TicTacToe game
+
+servers:
+  - url: http://localhost:8080
 
 paths:
-  /dummy:
-    get:
-      summary: Dummy endpoint for OpenAPI generation
-      operationId: dummy
+
+  /games:
+    post:
+      summary: Create a new game
+      operationId: createGame
       responses:
         '200':
-          description: OK
+          description: Game created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+
+  /games/{gameId}:
+    get:
+      summary: Get game state
+      operationId: getGame
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /games/{gameId}/moves:
+    post:
+      summary: Make a move
+      operationId: makeMove
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveRequest'
+      responses:
+        '200':
+          description: Move successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+        '400':
+          description: Invalid move or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Game already finished
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /games/{gameId}/reset:
+    post:
+      summary: Reset an existing game
+      operationId: resetGame
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Game reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponse'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
+
   schemas:
 
     MoveRequest:
@@ -30,6 +130,11 @@ components:
 
     GameResponse:
       type: object
+      required:
+        - gameId
+        - board
+        - currentPlayer
+        - status
       properties:
         gameId:
           type: string
@@ -52,7 +157,11 @@ components:
 
     ErrorResponse:
       type: object
+      required:
+        - status
+        - errorDetail
       properties:
+
         status:
           type: integer
           example: 400
