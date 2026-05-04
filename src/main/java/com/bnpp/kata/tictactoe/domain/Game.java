@@ -12,6 +12,7 @@ public class Game {
     private Player currentPlayer;
     private GameStatus status;
     public static final char EMPTY = '-';
+    public static final int START_INCLUSIVE = 0;
 
     public Game(String gameId) {
         this.gameId = gameId;

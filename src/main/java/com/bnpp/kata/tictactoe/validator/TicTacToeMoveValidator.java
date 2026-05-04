@@ -19,7 +19,7 @@ public class TicTacToeMoveValidator {
 
         char[] board = game.getBoard();
 
-        if (position < 0 || position >= board.length) {
+        if (position < Game.START_INCLUSIVE || position >= board.length) {
             throw new IllegalArgumentException(INVALID_POSITION + position);
         }
 

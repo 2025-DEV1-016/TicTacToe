@@ -12,7 +12,6 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class GameEngine {
 
-    public static final int START_INCLUSIVE = 0;
     private final WinStrategy winStrategy;
 
     public void applyMove(Game game, int position) {
@@ -36,7 +35,7 @@ public class GameEngine {
 
     private boolean isDraw(Game game) {
 
-        return IntStream.range(START_INCLUSIVE, game.getBoard().length)
+        return IntStream.range(Game.START_INCLUSIVE, game.getBoard().length)
                 .noneMatch(boardPosition -> game.getBoard()[boardPosition] == Game.EMPTY);
 
     }
