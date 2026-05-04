@@ -1,5 +1,6 @@
 package com.bnpp.kata.tictactoe.controller;
 
+import com.bnpp.kata.tictactoe.api.GamesApi;
 import com.bnpp.kata.tictactoe.api.model.GameResponse;
 import com.bnpp.kata.tictactoe.mapper.GameMapper;
 import com.bnpp.kata.tictactoe.service.TicTacToeService;
@@ -10,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class TicTacToeController {
+public class TicTacToeController implements GamesApi {
     private final TicTacToeService ticTacToeService;
 
     private final GameMapper gameMapper;
 
-    @PostMapping("/games")
+    @Override
     public ResponseEntity<GameResponse> createGame() {
         return ResponseEntity.ok(gameMapper.toResponse(ticTacToeService.createGame()));
     }
