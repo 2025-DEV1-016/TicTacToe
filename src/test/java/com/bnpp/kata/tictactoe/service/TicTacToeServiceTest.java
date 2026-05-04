@@ -41,13 +41,12 @@ public class TicTacToeServiceTest {
         assertEquals(BOARD_LENGTH, newGame.getBoard().length);
     }
 
-
     @Test
     @DisplayName("move should place X at the given position on first turn")
     void shouldPlaceXFirst() {
         Game game = ticTacToeService.createGame();
 
-        Game updated = ticTacToeService.move(game, 0);
+        Game updated = ticTacToeService.move(game.getGameId(), 0);
 
         assertEquals('X', updated.getBoard()[0]);
     }
@@ -57,8 +56,9 @@ public class TicTacToeServiceTest {
     void shouldAlternatePlayers() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game, 0); // X
-        Game updated = ticTacToeService.move(game, 1); // O
+        ticTacToeService.move(game.getGameId(), 0);
+
+        Game updated = ticTacToeService.move(game.getGameId(), 1);
 
         assertEquals('O', updated.getBoard()[1]);
     }
@@ -68,11 +68,12 @@ public class TicTacToeServiceTest {
     void shouldDetectWin() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game, 0);
-        ticTacToeService.move(game, 3);
-        ticTacToeService.move(game, 1);
-        ticTacToeService.move(game, 4);
-        Game result = ticTacToeService.move(game, 2); // win
+        ticTacToeService.move(game.getGameId(), 0);
+        ticTacToeService.move(game.getGameId(), 3);
+        ticTacToeService.move(game.getGameId(), 1);
+        ticTacToeService.move(game.getGameId(), 4);
+
+        Game result = ticTacToeService.move(game.getGameId(), 2);
 
         assertEquals(GameStatus.WIN, result.getStatus());
         assertEquals('X', result.getBoard()[2]);
@@ -83,15 +84,16 @@ public class TicTacToeServiceTest {
     void shouldDetectDraw() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game, 0);
-        ticTacToeService.move(game, 1);
-        ticTacToeService.move(game, 2);
-        ticTacToeService.move(game, 4);
-        ticTacToeService.move(game, 3);
-        ticTacToeService.move(game, 5);
-        ticTacToeService.move(game, 7);
-        ticTacToeService.move(game, 6);
-        Game result = ticTacToeService.move(game, 8);
+        ticTacToeService.move(game.getGameId(), 0);
+        ticTacToeService.move(game.getGameId(), 1);
+        ticTacToeService.move(game.getGameId(), 2);
+        ticTacToeService.move(game.getGameId(), 4);
+        ticTacToeService.move(game.getGameId(), 3);
+        ticTacToeService.move(game.getGameId(), 5);
+        ticTacToeService.move(game.getGameId(), 7);
+        ticTacToeService.move(game.getGameId(), 6);
+
+        Game result = ticTacToeService.move(game.getGameId(), 8);
 
         assertEquals(GameStatus.DRAW, result.getStatus());
     }
@@ -101,14 +103,14 @@ public class TicTacToeServiceTest {
     void shouldNotAllowMoveAfterWin() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game, 0);
-        ticTacToeService.move(game, 3);
-        ticTacToeService.move(game, 1);
-        ticTacToeService.move(game, 4);
-        ticTacToeService.move(game, 2); // win
+        ticTacToeService.move(game.getGameId(), 0);
+        ticTacToeService.move(game.getGameId(), 3);
+        ticTacToeService.move(game.getGameId(), 1);
+        ticTacToeService.move(game.getGameId(), 4);
+        ticTacToeService.move(game.getGameId(), 2);
 
         assertThrows(IllegalStateException.class,
-                () -> ticTacToeService.move(game, 5));
+                () -> ticTacToeService.move(game.getGameId(), 5));
     }
 
     @Test
@@ -116,18 +118,18 @@ public class TicTacToeServiceTest {
     void shouldNotAllowMoveAfterDraw() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game, 0);
-        ticTacToeService.move(game, 1);
-        ticTacToeService.move(game, 2);
-        ticTacToeService.move(game, 4);
-        ticTacToeService.move(game, 3);
-        ticTacToeService.move(game, 5);
-        ticTacToeService.move(game, 7);
-        ticTacToeService.move(game, 6);
-        ticTacToeService.move(game, 8); // draw
+        ticTacToeService.move(game.getGameId(), 0);
+        ticTacToeService.move(game.getGameId(), 1);
+        ticTacToeService.move(game.getGameId(), 2);
+        ticTacToeService.move(game.getGameId(), 4);
+        ticTacToeService.move(game.getGameId(), 3);
+        ticTacToeService.move(game.getGameId(), 5);
+        ticTacToeService.move(game.getGameId(), 7);
+        ticTacToeService.move(game.getGameId(), 6);
+        ticTacToeService.move(game.getGameId(), 8);
 
         assertThrows(IllegalStateException.class,
-                () -> ticTacToeService.move(game, 0));
+                () -> ticTacToeService.move(game.getGameId(), 0));
     }
 
     @ParameterizedTest
@@ -137,7 +139,7 @@ public class TicTacToeServiceTest {
         Game game = ticTacToeService.createGame();
 
         assertThrows(IllegalArgumentException.class,
-                () -> ticTacToeService.move(game, position));
+                () -> ticTacToeService.move(game.getGameId(), position));
     }
 
     @Test
@@ -145,10 +147,10 @@ public class TicTacToeServiceTest {
     void shouldNotAllowSameCellTwice() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game, 0);
+        ticTacToeService.move(game.getGameId(), 0);
 
         assertThrows(IllegalArgumentException.class,
-                () -> ticTacToeService.move(game, 0));
+                () -> ticTacToeService.move(game.getGameId(), 0));
     }
 
     @Test
@@ -156,13 +158,14 @@ public class TicTacToeServiceTest {
     void shouldNotSwitchPlayerAfterGameEnds() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game, 0);
-        ticTacToeService.move(game, 3);
-        ticTacToeService.move(game, 1);
-        ticTacToeService.move(game, 4);
-        Game result = ticTacToeService.move(game, 2); // win
+        ticTacToeService.move(game.getGameId(), 0);
+        ticTacToeService.move(game.getGameId(), 3);
+        ticTacToeService.move(game.getGameId(), 1);
+        ticTacToeService.move(game.getGameId(), 4);
 
-        assertEquals(Player.X, result.getCurrentPlayer()); // stays same
+        Game result = ticTacToeService.move(game.getGameId(), 2);
+
+        assertEquals(Player.X, result.getCurrentPlayer());
     }
 
     @Test
@@ -170,13 +173,11 @@ public class TicTacToeServiceTest {
     void shouldResetGameToInitialState() {
         Game game = ticTacToeService.createGame();
 
-        String gameId = game.getGameId();
+        ticTacToeService.move(game.getGameId(), 0);
 
-        ticTacToeService.move(game, 0);
+        Game resetGame = ticTacToeService.reset(game.getGameId());
 
-        Game resetGame = ticTacToeService.reset(game);
-
-        assertEquals(gameId, resetGame.getGameId());
+        assertEquals(game.getGameId(), resetGame.getGameId());
         assertEquals(GameStatus.IN_PROGRESS, resetGame.getStatus());
         assertEquals(Player.X, resetGame.getCurrentPlayer());
         assertArrayEquals("---------".toCharArray(), resetGame.getBoard());
@@ -187,21 +188,48 @@ public class TicTacToeServiceTest {
     void shouldResetExistingGame() {
 
         Game game = ticTacToeService.createGame();
-        String gameId = game.getGameId();
 
-        Game resetGame = ticTacToeService.reset(game);
+        Game resetGame = ticTacToeService.reset(game.getGameId());
 
-        assertEquals(gameId, resetGame.getGameId());
+        assertEquals(game.getGameId(), resetGame.getGameId());
     }
 
     @Test
-    @DisplayName("should throw exception when resetting non-existing game")
-    void shouldThrowWhenResetNonExistingGame() {
+    @DisplayName("should throw when resetting non-existing game")
+    void shouldThrowWhenResetGameNotFound() {
 
-        Game game = new Game("non-existing-id");
+        String gameId = "invalid-id";
 
-        assertThrows(NoSuchElementException.class,
-                () -> ticTacToeService.reset(game));
+        assertThrows(NoSuchElementException.class, () ->
+                ticTacToeService.reset(gameId)
+        );
+    }
+
+    @Test
+    @DisplayName("should throw exception when game not found")
+    void shouldThrowWhenGameNotFound() {
+
+        String gameId = "unknown-id";
+
+        NoSuchElementException exception = assertThrows(
+                NoSuchElementException.class,
+                () -> ticTacToeService.getGame(gameId)
+        );
+
+        assertEquals("Game not found: " + gameId, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("should create game and store it retrievable by id")
+    void shouldCreateAndStoreGame() {
+
+        Game game = ticTacToeService.createGame();
+
+        assertNotNull(game.getGameId());
+
+        Game fetched = ticTacToeService.getGame(game.getGameId());
+
+        assertEquals(game.getGameId(), fetched.getGameId());
     }
 
 }

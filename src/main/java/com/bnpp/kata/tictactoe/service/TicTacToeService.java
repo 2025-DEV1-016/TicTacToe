@@ -16,7 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class TicTacToeService {
 
-    private final TicTacToeMoveValidator ticTacToeMoveValidator;
+    public static final String GAME_NOT_FOUND = "Game not found: ";
+
+    private final TicTacToeMoveValidator validator;
 
     private final GameEngine gameEngine;
 
@@ -33,28 +35,29 @@ public class TicTacToeService {
         return newGame;
     }
 
-    public Game move(Game game, int position) {
+    public Game move(String gameId, int position) {
 
-        ticTacToeMoveValidator.validate(game, position);
+        Game game = getGame(gameId);
+
+        validator.validate(game, position);
 
         gameEngine.applyMove(game, position);
 
         return game;
     }
 
-    public Game reset(Game game) {
+    public Game reset(String gameId) {
 
-        String gameId = game.getGameId();
-
-        if (!store.containsKey(gameId)) {
-            throw new NoSuchElementException("Game not found: " + gameId);
-        }
+        Game existingGame = getGame(gameId);
 
         Game newGame = new Game(gameId);
         store.put(gameId, newGame);
         return newGame;
     }
 
-
+    public Game getGame(String gameId) {
+        return Optional.ofNullable(store.get(gameId))
+                .orElseThrow(() -> new NoSuchElementException(GAME_NOT_FOUND + gameId));
+    }
 
 }
