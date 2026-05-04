@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -45,6 +46,12 @@ public class GlobalExceptionHandler {
                 "Unexpected error",
                 List.of()
         );
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFound(NoSuchElementException ex) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), List.of());
     }
 
     private ErrorResponse build(HttpStatus status, String message, List<String> details) {

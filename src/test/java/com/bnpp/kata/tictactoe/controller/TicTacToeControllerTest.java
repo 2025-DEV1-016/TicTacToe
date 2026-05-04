@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(TicTacToeController.class)
 public class TicTacToeControllerTest {
@@ -67,6 +68,23 @@ public class TicTacToeControllerTest {
         mockMvc.perform(post("/games/1/moves")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.gameId").value("1"));
+    }
+
+    @Test
+    @DisplayName("should return game by id")
+    void shouldGetGame() throws Exception {
+
+        Game game = new Game("1");
+
+        GameResponse response = new GameResponse();
+        response.setGameId("1");
+
+        when(ticTacToeService.getGame("1")).thenReturn(game);
+        when(gameMapper.toResponse(game)).thenReturn(response);
+
+        mockMvc.perform(get("/games/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameId").value("1"));
     }

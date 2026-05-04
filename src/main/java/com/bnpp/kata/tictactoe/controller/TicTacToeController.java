@@ -28,4 +28,9 @@ public class TicTacToeController implements GamesApi {
         );
     }
 
+    @Override
+    public ResponseEntity<GameResponse> getGame(String gameId) {
+        return ResponseEntity.ok(gameMapper.toResponse(ticTacToeService.getGame(gameId)));
+    }
+
 }

@@ -13,8 +13,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.NoSuchElementException;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +30,7 @@ public class GlobalExceptionHandlerTest {
     private static final String GAME_ID = "1";
 
     private static final String MOVES_URL = "/games/" + GAME_ID + "/moves";
+
 
     private static final String INVALID_POSITION_REQUEST = "{\"position\":99}";
     private static final String VALID_POSITION_REQUEST = "{\"position\":0}";
@@ -112,6 +116,20 @@ public class GlobalExceptionHandlerTest {
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(INTERNAL_SERVER_ERROR))
                 .andExpect(jsonPath("$.errorDetail").value(GENERIC_ERROR_MSG))
+                .andExpect(jsonPath("$.extraErrorData").isEmpty());
+    }
+
+    @Test
+    @DisplayName("should return 404 with game id in error message")
+    void shouldReturn404WithGameIdInMessage() throws Exception {
+
+        when(ticTacToeService.getGame(GAME_ID))
+                .thenThrow(new NoSuchElementException("Game not found: 1"));
+
+        mockMvc.perform(get("/games/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.errorDetail").value("Game not found: 1"))
                 .andExpect(jsonPath("$.extraErrorData").isEmpty());
     }
 
