@@ -15,10 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(TicTacToeController.class)
 public class TicTacToeControllerTest {
@@ -85,6 +85,23 @@ public class TicTacToeControllerTest {
         when(gameMapper.toResponse(game)).thenReturn(response);
 
         mockMvc.perform(get("/games/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.gameId").value("1"));
+    }
+
+    @Test
+    @DisplayName("should reset game via API")
+    void shouldResetGame() throws Exception {
+
+        Game game = new Game("1");
+
+        GameResponse response = new GameResponse();
+        response.setGameId("1");
+
+        when(ticTacToeService.reset("1")).thenReturn(game);
+        when(gameMapper.toResponse(game)).thenReturn(response);
+
+        mockMvc.perform(post("/games/1/reset"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameId").value("1"));
     }

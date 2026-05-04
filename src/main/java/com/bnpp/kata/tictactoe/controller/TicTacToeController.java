@@ -33,4 +33,9 @@ public class TicTacToeController implements GamesApi {
         return ResponseEntity.ok(gameMapper.toResponse(ticTacToeService.getGame(gameId)));
     }
 
+    @Override
+    public ResponseEntity<GameResponse> resetGame(String gameId) {
+        return ResponseEntity.ok(gameMapper.toResponse(ticTacToeService.reset(gameId)));
+    }
+
 }
