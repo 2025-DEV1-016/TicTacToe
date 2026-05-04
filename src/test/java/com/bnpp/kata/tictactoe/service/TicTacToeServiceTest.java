@@ -68,4 +68,22 @@ public class TicTacToeServiceTest {
         assertEquals(GameStatus.WIN, result.getStatus());
         assertEquals('X', result.getBoard()[2]);
     }
+
+    @Test
+    @DisplayName("should set game status to DRAW when board is full with no winner")
+    void shouldDetectDraw() {
+        Game game = ticTacToeService.createGame();
+
+        ticTacToeService.move(game, 0);
+        ticTacToeService.move(game, 1);
+        ticTacToeService.move(game, 2);
+        ticTacToeService.move(game, 4);
+        ticTacToeService.move(game, 3);
+        ticTacToeService.move(game, 5);
+        ticTacToeService.move(game, 7);
+        ticTacToeService.move(game, 6);
+        Game result = ticTacToeService.move(game, 8);
+
+        assertEquals(GameStatus.DRAW, result.getStatus());
+    }
 }

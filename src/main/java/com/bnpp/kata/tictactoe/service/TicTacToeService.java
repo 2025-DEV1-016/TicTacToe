@@ -27,6 +27,7 @@ public class TicTacToeService {
         char symbol = game.getCurrentPlayer().symbol();
         game.update(position, symbol);
         win(game, symbol);
+        draw(game);
         next(game);
         return game;
     }
@@ -48,5 +49,21 @@ public class TicTacToeService {
                 .anyMatch(boardArray -> Arrays.stream(boardArray)
                         .mapToObj(boardPosition -> board[boardPosition])
                         .allMatch(player -> player == symbol));
+    }
+
+    private void draw(Game game) {
+        if (game.getStatus() == GameStatus.IN_PROGRESS &&
+                isBoardFull(game.getBoard())) {
+            game.setStatus(GameStatus.DRAW);
+        }
+    }
+
+    private boolean isBoardFull(char[] board) {
+        for (char c : board) {
+            if (c == '-') { // assuming '-' is your empty marker
+                return false;
+            }
+        }
+        return true;
     }
 }
