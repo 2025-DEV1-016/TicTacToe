@@ -3,6 +3,7 @@ package com.bnpp.kata.tictactoe.service;
 import com.bnpp.kata.tictactoe.domain.Game;
 import com.bnpp.kata.tictactoe.domain.GameStatus;
 import com.bnpp.kata.tictactoe.domain.Player;
+import com.bnpp.kata.tictactoe.strategy.DefaultWinStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,8 @@ public class TicTacToeServiceTest {
 
     @BeforeEach
     public void setUp() {
-        ticTacToeService = new TicTacToeService();
+        ticTacToeService = new TicTacToeService(new DefaultWinStrategy());
+
     }
 
     @Test

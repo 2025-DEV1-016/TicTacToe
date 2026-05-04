@@ -2,19 +2,18 @@ package com.bnpp.kata.tictactoe.service;
 
 import com.bnpp.kata.tictactoe.domain.Game;
 import com.bnpp.kata.tictactoe.domain.GameStatus;
+import com.bnpp.kata.tictactoe.strategy.WinStrategy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class TicTacToeService {
 
-    private static final int[][] PATTERNS = {
-            {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
-            {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
-            {0, 4, 8}, {2, 4, 6}
-    };
+    private final WinStrategy winStrategy;
 
     public Game createGame() {
         String id = UUID.randomUUID().toString();
@@ -39,16 +38,9 @@ public class TicTacToeService {
     }
 
     private void win(Game game, char symbol) {
-        if (isWin(game.getBoard(), symbol)) {
+        if (winStrategy.isWin(game.getBoard(), symbol)) {
             game.setStatus(GameStatus.WIN);
         }
-    }
-
-    public boolean isWin(char[] board, char symbol) {
-        return Arrays.stream(PATTERNS)
-                .anyMatch(boardArray -> Arrays.stream(boardArray)
-                        .mapToObj(boardPosition -> board[boardPosition])
-                        .allMatch(player -> player == symbol));
     }
 
     private void draw(Game game) {
