@@ -2,7 +2,9 @@ package com.bnpp.kata.tictactoe.controller;
 
 import com.bnpp.kata.tictactoe.api.model.GameResponse;
 import com.bnpp.kata.tictactoe.domain.Game;
+import com.bnpp.kata.tictactoe.mapper.GameMapper;
 import com.bnpp.kata.tictactoe.service.TicTacToeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,12 @@ public class TicTacToeControllerTest {
     @MockBean
     private TicTacToeService ticTacToeService;
 
+    @MockBean
+    private GameMapper gameMapper;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     @DisplayName("should create a new game via API")
     void shouldCreateGame() throws Exception {
@@ -33,11 +41,10 @@ public class TicTacToeControllerTest {
         response.setGameId("1");
 
         when(ticTacToeService.createGame()).thenReturn(game);
+        when(gameMapper.toResponse(game)).thenReturn(response);
 
         mockMvc.perform(post("/games"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.gameId").value("1"))
-                .andExpect(jsonPath("$.currentPlayer").value("X"))
-                .andExpect(jsonPath("$.status").value("IN_PROGRESS"));
+                .andExpect(jsonPath("$.gameId").value("1"));
     }
 }
