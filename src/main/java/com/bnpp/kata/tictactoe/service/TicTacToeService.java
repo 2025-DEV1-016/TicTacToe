@@ -1,8 +1,7 @@
 package com.bnpp.kata.tictactoe.service;
 
 import com.bnpp.kata.tictactoe.domain.Game;
-import com.bnpp.kata.tictactoe.domain.GameStatus;
-import com.bnpp.kata.tictactoe.strategy.WinStrategy;
+import com.bnpp.kata.tictactoe.engine.GameEngine;
 import com.bnpp.kata.tictactoe.validator.TicTacToeMoveValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,12 +12,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TicTacToeService {
 
-    private final WinStrategy winStrategy;
-
     private final TicTacToeMoveValidator ticTacToeMoveValidator;
 
+    private final GameEngine gameEngine;
+
     public Game createGame() {
+
         String id = UUID.randomUUID().toString();
+
         Game newGame = new Game(id);
 
         return newGame;
@@ -28,42 +29,8 @@ public class TicTacToeService {
 
         ticTacToeMoveValidator.validate(game, position);
 
-        char symbol = game.getCurrentPlayer().symbol();
-        game.update(position, symbol);
-
-        win(game, symbol);
-        draw(game);
-        next(game);
+        gameEngine.applyMove(game, position);
 
         return game;
     }
-
-    private static void next(Game game) {
-        if (game.getStatus() == GameStatus.IN_PROGRESS) {
-            game.setCurrentPlayer(game.getCurrentPlayer().next());
-        }
-    }
-
-    private void win(Game game, char symbol) {
-        if (winStrategy.isWin(game.getBoard(), symbol)) {
-            game.setStatus(GameStatus.WIN);
-        }
-    }
-
-    private void draw(Game game) {
-        if (game.getStatus() == GameStatus.IN_PROGRESS &&
-                isBoardFull(game.getBoard())) {
-            game.setStatus(GameStatus.DRAW);
-        }
-    }
-
-    private boolean isBoardFull(char[] board) {
-        for (char c : board) {
-            if (c == Game.EMPTY) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 }
