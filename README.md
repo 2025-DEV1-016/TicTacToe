@@ -86,17 +86,17 @@ The `gameId` returned from the **Create Game** API is reused in subsequent reque
 **Response**
 
     {
-      "gameId": "1234-abcd",
-      "status": "IN_PROGRESS",
-      "currentPlayer": "X",
-      "board": ["", "", "", "", "", "", "", "", ""]
+        "gameId": "8fd2c623-a480-4152-9f74-f8893c13db4d",
+        "board": [ "-","-","-","-","-","-","-","-","-"],
+        "currentPlayer": "X",
+        "status": "IN_PROGRESS"
     }
 
 ### 2.Make Move
 
 **Request**
 
-    POST /games/1234-abcd/moves
+    POST /games/8fd2c623-a480-4152-9f74-f8893c13db4d/moves
 
     {
         "position": 0
@@ -105,40 +105,40 @@ The `gameId` returned from the **Create Game** API is reused in subsequent reque
 **Response**
 
     {
-        "gameId": "1234-abcd",
-        "status": "IN_PROGRESS",
+        "gameId": "8fd2c623-a480-4152-9f74-f8893c13db4d",
+        "board": [ "X","-","-","-","-","-","-","-","-" ],
         "currentPlayer": "O",
-        "board": ["X", "", "", "", "", "", "", "", ""]
+        "status": "IN_PROGRESS"
     }
 
 ### 3.Get Game by ID
 
 **Request**
 
-    GET /games/1234-abcd
+    GET /games/8fd2c623-a480-4152-9f74-f8893c13db4d
 
 **Response**
 
     {
-      "gameId": "1234-abcd",
-      "status": "IN_PROGRESS",
-      "currentPlayer": "X",
-      "board": ["", "", "", "", "", "", "", "", ""]
+        "gameId": "8fd2c623-a480-4152-9f74-f8893c13db4d",
+        "board": [ "X","-","-","-","-","-","-","-","-" ],
+        "currentPlayer": "O",
+        "status": "IN_PROGRESS"
     }
 
 ### 4. Reset Game
 
 **Request**
 
-    POST /games/1234-abcd/reset
+    POST /games/8fd2c623-a480-4152-9f74-f8893c13db4d/reset
 
 **Response**
 
     {
-      "gameId": "1234-abcd",
-      "status": "IN_PROGRESS",
-      "currentPlayer": "X",
-      "board": ["", "", "", "", "", "", "", "", ""]
+        "gameId": "8fd2c623-a480-4152-9f74-f8893c13db4d",
+        "board": [ "X","-","-","-","-","-","-","-","-" ],
+        "currentPlayer": "O",
+        "status": "IN_PROGRESS"
     }
 
 ## Test Reports
