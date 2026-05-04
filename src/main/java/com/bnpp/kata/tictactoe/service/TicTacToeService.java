@@ -6,7 +6,6 @@ import com.bnpp.kata.tictactoe.strategy.WinStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -23,11 +22,16 @@ public class TicTacToeService {
     }
 
     public Game move(Game game, int position) {
+
+        validate(game, position);
+
         char symbol = game.getCurrentPlayer().symbol();
         game.update(position, symbol);
+
         win(game, symbol);
         draw(game);
         next(game);
+
         return game;
     }
 
@@ -52,10 +56,26 @@ public class TicTacToeService {
 
     private boolean isBoardFull(char[] board) {
         for (char c : board) {
-            if (c == '-') { // assuming '-' is your empty marker
+            if (c == Game.EMPTY) {
                 return false;
             }
         }
         return true;
+    }
+
+    public void validate(Game game, int position) {
+
+        if (game.getStatus() != GameStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Game already finished");
+        }
+
+        if (position < 0 || position >= game.getBoard().length) {
+            throw new IllegalArgumentException("Invalid position: " + position);
+        }
+
+        if (game.getBoard()[position] != Game.EMPTY) {
+            throw new IllegalArgumentException("Cell already occupied at position: " + position);
+        }
+
     }
 }

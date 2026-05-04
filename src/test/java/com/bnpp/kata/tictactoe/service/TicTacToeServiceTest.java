@@ -7,9 +7,10 @@ import com.bnpp.kata.tictactoe.strategy.DefaultWinStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TicTacToeServiceTest {
 
@@ -29,7 +30,7 @@ public class TicTacToeServiceTest {
 
         Game newGame = ticTacToeService.createGame();
 
-        assertNotNull(newGame.getGameId());
+        assertNotNull(newGame.getGame());
         assertEquals(Player.X, newGame.getCurrentPlayer());
         assertEquals(GameStatus.IN_PROGRESS, newGame.getStatus());
         assertEquals(BOARD_LENGTH, newGame.getBoard().length);
@@ -87,5 +88,74 @@ public class TicTacToeServiceTest {
         Game result = ticTacToeService.move(game, 8);
 
         assertEquals(GameStatus.DRAW, result.getStatus());
+    }
+
+    @Test
+    @DisplayName("should not allow moves after a game is won")
+    void shouldNotAllowMoveAfterWin() {
+        Game game = ticTacToeService.createGame();
+
+        ticTacToeService.move(game, 0);
+        ticTacToeService.move(game, 3);
+        ticTacToeService.move(game, 1);
+        ticTacToeService.move(game, 4);
+        ticTacToeService.move(game, 2); // win
+
+        assertThrows(IllegalStateException.class,
+                () -> ticTacToeService.move(game, 5));
+    }
+
+    @Test
+    @DisplayName("should not allow moves after a game is drawn")
+    void shouldNotAllowMoveAfterDraw() {
+        Game game = ticTacToeService.createGame();
+
+        ticTacToeService.move(game, 0);
+        ticTacToeService.move(game, 1);
+        ticTacToeService.move(game, 2);
+        ticTacToeService.move(game, 4);
+        ticTacToeService.move(game, 3);
+        ticTacToeService.move(game, 5);
+        ticTacToeService.move(game, 7);
+        ticTacToeService.move(game, 6);
+        ticTacToeService.move(game, 8); // draw
+
+        assertThrows(IllegalStateException.class,
+                () -> ticTacToeService.move(game, 0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {9, -1})
+    @DisplayName("should not allow invalid board positions")
+    void shouldNotAllowInvalidPositions(int position) {
+        Game game = ticTacToeService.createGame();
+
+        assertThrows(IllegalArgumentException.class,
+                () -> ticTacToeService.move(game, position));
+    }
+
+    @Test
+    @DisplayName("should not allow placing a move on an already occupied cell")
+    void shouldNotAllowSameCellTwice() {
+        Game game = ticTacToeService.createGame();
+
+        ticTacToeService.move(game, 0);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> ticTacToeService.move(game, 0));
+    }
+
+    @Test
+    @DisplayName("should not switch player after game ends")
+    void shouldNotSwitchPlayerAfterGameEnds() {
+        Game game = ticTacToeService.createGame();
+
+        ticTacToeService.move(game, 0);
+        ticTacToeService.move(game, 3);
+        ticTacToeService.move(game, 1);
+        ticTacToeService.move(game, 4);
+        Game result = ticTacToeService.move(game, 2); // win
+
+        assertEquals(Player.X, result.getCurrentPlayer()); // stays same
     }
 }

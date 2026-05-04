@@ -7,13 +7,14 @@ import lombok.Setter;
 @Setter
 public class Game {
 
-    private final String gameId;
+    private final String game;
     private final char[] board;
     private Player currentPlayer;
     private GameStatus status;
+    public static final char EMPTY = '-';
 
     public Game(String gameId) {
-        this.gameId = gameId;
+        this.game = gameId;
         this.board = "---------".toCharArray();
         this.currentPlayer = Player.X;
         this.status = GameStatus.IN_PROGRESS;
