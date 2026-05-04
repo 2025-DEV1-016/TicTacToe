@@ -55,7 +55,7 @@ This project follows the [Udacity Git Commit Message Style Guide](https://udacit
 
  • Clone this repository:
 
-    https://github.com/2025-DEV1-016/Tic-Tac-Toe.git
+    https://github.com/2025-DEV1-016/TicTacToe.git
 
  • Build the project and run the tests by running
 
@@ -70,7 +70,7 @@ This project follows the [Udacity Git Commit Message Style Guide](https://udacit
 
  • Once started, the application will be available at:
 
-    http://localhost:8080
+    http://localhost:8080/api/v1/
 
 ## Sample Input and Output
 
