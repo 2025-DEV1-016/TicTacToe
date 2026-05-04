@@ -25,7 +25,7 @@ public interface GameMapper {
     }
 
     default List<GameResponse.BoardEnum> mapBoard(char[] board) {
-        if (board == null) return null;
+        if (board == null) return List.of();
 
         return IntStream.range(0, board.length)
                 .mapToObj(i -> GameResponse.BoardEnum.fromValue(String.valueOf(board[i])))

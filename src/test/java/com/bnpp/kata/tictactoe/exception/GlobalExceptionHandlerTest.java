@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TicTacToeController.class)
 @Import(GlobalExceptionHandler.class)
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 
     private static final String GAME_ID = "1";
 

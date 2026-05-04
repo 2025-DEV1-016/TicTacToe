@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TicTacToeController.class)
-public class TicTacToeControllerTest {
+class TicTacToeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

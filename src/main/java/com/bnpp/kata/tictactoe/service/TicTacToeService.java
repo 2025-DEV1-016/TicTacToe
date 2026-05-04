@@ -52,7 +52,7 @@ public class TicTacToeService {
 
     public Game reset(String gameId) {
         log.info("Resetting game with id={}", gameId);
-        Game existingGame = getGame(gameId);
+        getGame(gameId);
 
         Game newGame = new Game(gameId);
         store.put(gameId, newGame);

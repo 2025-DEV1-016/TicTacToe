@@ -103,6 +103,7 @@
                                 <!-- Exclude OpenAPI generated -->
                                 <exclude>**/api/**</exclude>
                                 <exclude>**/model/**</exclude>
+                                <exclude>**/mapper/*Impl.class</exclude>
 
                                 <!-- Optional extras -->
                                 <exclude>**/*Application*</exclude>
@@ -142,6 +143,7 @@
                     </targetTests>
                     <excludedClasses>
                         <param>com.bnpp.kata.tictactoe.api.*</param>
+                        <param>com.bnpp.kata.tictactoe.mapper.*Impl</param>
                         <param>*Application*</param>
                     </excludedClasses>
                 </configuration>

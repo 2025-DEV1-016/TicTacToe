@@ -50,7 +50,6 @@ public class GameMapperTest {
     @Test
     @DisplayName("should return null when input game is null")
     void shouldReturnNullWhenGameIsNull() {
-        GameResponse response = gameMapper.toResponse(null);
         assertNull(gameMapper.map((Player) null));
     }
 
@@ -69,7 +68,7 @@ public class GameMapperTest {
 
         GameMapper mapper = new GameMapperImpl();
 
-        assertNull(mapper.mapBoard(null));
+        assertEquals(List.of(), mapper.mapBoard(null));
     }
 
     @Test

@@ -27,7 +27,7 @@ public class TicTacToeServiceTest {
     private TicTacToeService ticTacToeService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         ticTacToeService = new TicTacToeService(new TicTacToeMoveValidator(), new GameEngine(new DefaultWinStrategy()));
 
@@ -107,14 +107,16 @@ public class TicTacToeServiceTest {
     void shouldNotAllowMoveAfterWin() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game.getGameId(), 0);
-        ticTacToeService.move(game.getGameId(), 3);
-        ticTacToeService.move(game.getGameId(), 1);
-        ticTacToeService.move(game.getGameId(), 4);
-        ticTacToeService.move(game.getGameId(), 2);
+        String gameId = game.getGameId();
+
+        ticTacToeService.move(gameId, 0);
+        ticTacToeService.move(gameId, 3);
+        ticTacToeService.move(gameId, 1);
+        ticTacToeService.move(gameId, 4);
+        ticTacToeService.move(gameId, 2);
 
         assertThrows(IllegalStateException.class,
-                () -> ticTacToeService.move(game.getGameId(), 5));
+                () -> ticTacToeService.move(gameId, 5));
     }
 
     @Test
@@ -122,18 +124,20 @@ public class TicTacToeServiceTest {
     void shouldNotAllowMoveAfterDraw() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game.getGameId(), 0);
-        ticTacToeService.move(game.getGameId(), 1);
-        ticTacToeService.move(game.getGameId(), 2);
-        ticTacToeService.move(game.getGameId(), 4);
-        ticTacToeService.move(game.getGameId(), 3);
-        ticTacToeService.move(game.getGameId(), 5);
-        ticTacToeService.move(game.getGameId(), 7);
-        ticTacToeService.move(game.getGameId(), 6);
-        ticTacToeService.move(game.getGameId(), 8);
+        String gameId = game.getGameId();
+
+        ticTacToeService.move(gameId, 0);
+        ticTacToeService.move(gameId, 1);
+        ticTacToeService.move(gameId, 2);
+        ticTacToeService.move(gameId, 4);
+        ticTacToeService.move(gameId, 3);
+        ticTacToeService.move(gameId, 5);
+        ticTacToeService.move(gameId, 7);
+        ticTacToeService.move(gameId, 6);
+        ticTacToeService.move(gameId, 8);
 
         assertThrows(IllegalStateException.class,
-                () -> ticTacToeService.move(game.getGameId(), 0));
+                () -> ticTacToeService.move(gameId, 0));
     }
 
     @ParameterizedTest
@@ -142,8 +146,10 @@ public class TicTacToeServiceTest {
     void shouldNotAllowInvalidPositions(int position) {
         Game game = ticTacToeService.createGame();
 
+        String gameId = game.getGameId();
+
         assertThrows(IllegalArgumentException.class,
-                () -> ticTacToeService.move(game.getGameId(), position));
+                () -> ticTacToeService.move(gameId, position));
     }
 
     @Test
@@ -151,10 +157,12 @@ public class TicTacToeServiceTest {
     void shouldNotAllowSameCellTwice() {
         Game game = ticTacToeService.createGame();
 
-        ticTacToeService.move(game.getGameId(), 0);
+        String gameId = game.getGameId();
+
+        ticTacToeService.move(gameId, 0);
 
         assertThrows(IllegalArgumentException.class,
-                () -> ticTacToeService.move(game.getGameId(), 0));
+                () -> ticTacToeService.move(gameId, 0));
     }
 
     @Test
