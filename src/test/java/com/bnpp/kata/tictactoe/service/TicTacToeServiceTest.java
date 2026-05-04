@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TicTacToeServiceTest {
@@ -33,11 +35,12 @@ public class TicTacToeServiceTest {
 
         Game newGame = ticTacToeService.createGame();
 
-        assertNotNull(newGame.getGame());
+        assertNotNull(newGame.getGameId());
         assertEquals(Player.X, newGame.getCurrentPlayer());
         assertEquals(GameStatus.IN_PROGRESS, newGame.getStatus());
         assertEquals(BOARD_LENGTH, newGame.getBoard().length);
     }
+
 
     @Test
     @DisplayName("move should place X at the given position on first turn")
@@ -161,4 +164,44 @@ public class TicTacToeServiceTest {
 
         assertEquals(Player.X, result.getCurrentPlayer()); // stays same
     }
+
+    @Test
+    @DisplayName("Should reset the game to its initial state")
+    void shouldResetGameToInitialState() {
+        Game game = ticTacToeService.createGame();
+
+        String gameId = game.getGameId();
+
+        ticTacToeService.move(game, 0);
+
+        Game resetGame = ticTacToeService.reset(game);
+
+        assertEquals(gameId, resetGame.getGameId());
+        assertEquals(GameStatus.IN_PROGRESS, resetGame.getStatus());
+        assertEquals(Player.X, resetGame.getCurrentPlayer());
+        assertArrayEquals("---------".toCharArray(), resetGame.getBoard());
+    }
+
+    @Test
+    @DisplayName("should reset existing game")
+    void shouldResetExistingGame() {
+
+        Game game = ticTacToeService.createGame();
+        String gameId = game.getGameId();
+
+        Game resetGame = ticTacToeService.reset(game);
+
+        assertEquals(gameId, resetGame.getGameId());
+    }
+
+    @Test
+    @DisplayName("should throw exception when resetting non-existing game")
+    void shouldThrowWhenResetNonExistingGame() {
+
+        Game game = new Game("non-existing-id");
+
+        assertThrows(NoSuchElementException.class,
+                () -> ticTacToeService.reset(game));
+    }
+
 }
